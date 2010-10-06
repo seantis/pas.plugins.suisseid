@@ -59,7 +59,6 @@ setup(name='pas.plugins.suisseid',
       install_requires=['setuptools',
                         'httplib2',
                         'python-dateutil',
-                        'collective.monkeypatcher',
                         # -*- Extra requirements: -*-
                         ],
       tests_require=tests_require,

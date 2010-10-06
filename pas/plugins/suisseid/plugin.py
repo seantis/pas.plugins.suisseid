@@ -13,7 +13,7 @@ from Products.PluggableAuthService.interfaces.plugins \
                 import IAuthenticationPlugin, IUserEnumerationPlugin, IExtractionPlugin
 from Products.PluggableAuthService.permissions import ManageUsers
 
-from saml2.client import Saml2Client
+from client import Saml2Client
 from saml2.config import Config
 from saml2 import BINDING_HTTP_POST
 from config import sp_config
@@ -55,7 +55,7 @@ class SuisseIDPlugin(BasePlugin):
         if hasattr(self, '_v_cached_config') and self._v_cached_config:
             return self._v_cached_config
         config = Config()
-        config.load(sp_config)
+        config.load(sp_config.copy())
         config['entityid'] = self.config['portal_url']
         config['service']['sp']['name'] = self.config['portal_name']
         config['service']['sp']['url'] = self.config['portal_url']
