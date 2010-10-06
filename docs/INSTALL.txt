@@ -1,11 +1,11 @@
-psaraas.sonar Installation
---------------------------
+pas.plugins.suisseid Installation
+---------------------------------
 
-To install psaraas.sonar into the global Python environment (or a workingenv),
+To install pas.plugins.suisseid into the global Python environment (or a workingenv),
 using a traditional Zope 2 instance, you can do this:
 
 * When you're reading this you have probably already run 
-  ``easy_install psaraas.sonar``. Find out how to install setuptools
+  ``easy_install pas.plugins.suisseid``. Find out how to install setuptools
   (and EasyInstall) here:
   http://peak.telecommunity.com/DevCenter/EasyInstall
 
@@ -16,11 +16,11 @@ using a traditional Zope 2 instance, you can do this:
 
 into your Zope instance.
 
-* Create a file called ``psaraas.sonar-configure.zcml`` in the
+* Create a file called ``pas.plugins.suisseid-configure.zcml`` in the
   ``/path/to/instance/etc/package-includes`` directory.  The file
   should only contain this::
 
-    <include package="psaraas.sonar" />
+    <include package="pas.plugins.suisseid" />
 
 .. _pythonproducts: http://plone.org/products/pythonproducts
 
@@ -28,13 +28,13 @@ into your Zope instance.
 Alternatively, if you are using zc.buildout and the plone.recipe.zope2instance
 recipe to manage your project, you can do this:
 
-* Add ``psaraas.sonar`` to the list of eggs to install, e.g.:
+* Add ``pas.plugins.suisseid`` to the list of eggs to install, e.g.:
 
     [buildout]
     ...
     eggs =
         ...
-        psaraas.sonar
+        pas.plugins.suisseid
        
 * Tell the plone.recipe.zope2instance recipe to install a ZCML slug:
 
@@ -42,7 +42,7 @@ recipe to manage your project, you can do this:
     recipe = plone.recipe.zope2instance
     ...
     zcml =
-        psaraas.sonar
+        pas.plugins.suisseid
       
 * Re-run buildout, e.g. with:
 
