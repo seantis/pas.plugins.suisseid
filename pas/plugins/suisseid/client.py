@@ -20,7 +20,7 @@ from ech0113 import ExtendedAttribute
 FORM_SPEC = """<form method="post" action="%s">
    <input type="hidden" name="SAMLRequest" value="%s" />
    <input type="hidden" name="RelayState" value="%s" />
-   <input type="submit" value="Submit" />
+   <input style="visibility:hidden" type="submit" value="Submit" />
 </form>"""
 
 RESPONSE_NODE = 'urn:oasis:names:tc:SAML:2.0:protocol:Response'
@@ -82,7 +82,6 @@ class Saml2Client(BaseClient):
         
         extensions = []
         for attribute in required_attributes:
-            # TODO: Mandatory flag
             name_format = 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri'
             extensions.append(ExtendedAttribute(name_format=name_format, name=attribute, required='true'))
         for attribute in optional_attributes:
