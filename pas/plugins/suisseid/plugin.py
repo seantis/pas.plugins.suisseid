@@ -29,8 +29,21 @@ logger = logging.getLogger("PluggableAuthService")
 suisseid_format = re.compile('[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}')
 
 attributes = {
+    'Given Names' : 'http://www.ech.ch/xmlns/eCH-0113/1/givenNames',
     'First Name' : 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname',
     'Last Name' : 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname',
+    'Date of Birth' : 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dateofbirth',
+    # TODO: Date of Birth partially known
+    'Place of Birth' : 'http://www.ech.ch/xmlns/eCH-0113/1/placeOfBirth',
+    'Origin' : 'http://www.ech.ch/xmlns/eCH-0113/1/origin',
+    'Gender' : 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/gender',
+    'Nationality' : 'http://www.ech.ch/xmlns/eCH-0113/1/nationality',
+    'Identification Number' : 'http://www.ech.ch/xmlns/eCH-0113/1/identificationNumber',
+    'Identification Kind' : 'http://www.ech.ch/xmlns/eCH-0113/1/identificationKind',
+    'Issuing Country' : 'http://www.ech.ch/xmlns/eCH-0113/1/issuingCountry',
+    'Issuing Office' : 'http://www.ech.ch/xmlns/eCH-0113/1/issuingOffice',
+    'Identification Issued On' : 'http://www.ech.ch/xmlns/eCH-0113/1/identificationIssuedOn',
+    'Identification Valid Until' : 'http://www.ech.ch/xmlns/eCH-0113/1/identificationValidUntil',
 }
 
 def addSuisseIDPlugin(self, id, title='', REQUEST=None):
