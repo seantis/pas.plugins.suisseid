@@ -29,6 +29,8 @@ logger = logging.getLogger("PluggableAuthService")
 suisseid_format = re.compile('[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}')
 
 attributes = {
+    
+    # Plain Core Assertion Attributes 
     'Given Names' : 'http://www.ech.ch/xmlns/eCH-0113/1/givenNames',
     'First Name' : 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname',
     'Last Name' : 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname',
@@ -44,6 +46,13 @@ attributes = {
     'Issuing Office' : 'http://www.ech.ch/xmlns/eCH-0113/1/issuingOffice',
     'Identification Issued On' : 'http://www.ech.ch/xmlns/eCH-0113/1/identificationIssuedOn',
     'Identification Valid Until' : 'http://www.ech.ch/xmlns/eCH-0113/1/identificationValidUntil',
+    
+    # Derived Core Assertion Attributes
+    'Age' : 'http://www.ech.ch/xmlns/eCH-0113/1/age',
+    'isOver16' : 'http://www.ech.ch/xmlns/eCH-0113/1/isOver16',
+    'isOver18' : 'http://www.ech.ch/xmlns/eCH-0113/1/isOver18',
+    'age-18-or-over' : 'http://schemas.informationcard.net/@ics/age-18-or-over/2008-11',
+    'isSwissCitizen' : 'http://www.ech.ch/xmlns/eCH-0113/1/isSwissCitizen',
 }
 
 def addSuisseIDPlugin(self, id, title='', REQUEST=None):
