@@ -13,9 +13,10 @@ from Products.PluggableAuthService.interfaces.plugins \
                 import IAuthenticationPlugin, IUserEnumerationPlugin, IExtractionPlugin
 from Products.PluggableAuthService.permissions import ManageUsers
 
+from Products.CMFCore.utils import getToolByName
+
 from client import Saml2Client
 from saml2.config import Config
-from saml2 import BINDING_HTTP_POST
 from config import sp_config
 
 _browserdir = os.path.join( package_home( globals() ), 'www' )
@@ -26,6 +27,11 @@ manage_addSuisseIDPlugin = PageTemplateFile("../www/suisseIDAdd", globals(),
 logger = logging.getLogger("PluggableAuthService")
 
 suisseid_format = re.compile('[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}')
+
+attributes = {
+    'First Name' : 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname',
+    'Last Name' : 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname',
+}
 
 def addSuisseIDPlugin(self, id, title='', REQUEST=None):
     """Add a suisseID plugin to a Pluggable Authentication Service.
@@ -60,12 +66,16 @@ class SuisseIDPlugin(BasePlugin):
         config['service']['sp']['name'] = self.config['portal_name']
         config['service']['sp']['url'] = self.config['portal_url']
         required_attributes = []
-        if self.config['required_attributes'].strip():
-            required_attributes = self.config['required_attributes'].strip().split('\n')
-        config['service']['sp']['required_attributes'] = required_attributes
+        for attribute in self.config['required_attributes'].split('\r\n'):
+            name = attributes.get(attribute, None)
+            if name:
+                required_attributes.append(name)
         optional_attributes = []
-        if self.config['optional_attributes'].strip():
-            optional_attributes = self.config['optional_attributes'].strip().split('\n')
+        for attribute in self.config['optional_attributes'].split('\r\n'):
+            name = attributes.get(attribute, None)
+            if name:
+                optional_attributes.append(name)
+        config['service']['sp']['required_attributes'] = required_attributes
         config['service']['sp']['optional_attributes'] = optional_attributes
         config['key_file'] = self.config['key_file']
         config['cert_file'] = self.config['cert_file']
@@ -108,18 +118,16 @@ class SuisseIDPlugin(BasePlugin):
                                              provider_url,
                                              config["service"]["sp"]['url'],
                                              config["service"]["sp"]['name'],
-                                             binding=BINDING_HTTP_POST,
-                                             log=logger)
+                                             log=logger,
+                                             required_attributes=config["service"]["sp"]['required_attributes'],
+                                             optional_attributes=config["service"]["sp"]['optional_attributes'])
                            
             if not hasattr(self, '_v_outstanding_authn'):
                 self._v_outstanding_authn = {}
             self._v_outstanding_authn[sid] = ''
             
             # Compose POST form with onload submit
-            form_body = '<html>'+''.join(result)+'</html>'
-            ### TODO: Workaround for JS syntax error in PySAML2
-            form_body = form_body.replace('</script>', '}</script>')
-            ###
+            form_body = ''.join(result)
             request.response.setHeader("Content-type", "text/html")
             request.response.setHeader("Content-length", str(len(form_body)))
             request.response.setBody(form_body, lock=True)
@@ -143,9 +151,12 @@ class SuisseIDPlugin(BasePlugin):
             scl = Saml2Client(request.environ, config)
             
             session_info = scl.response(post, config['entityid'], self._v_outstanding_authn, logger)
+            ava = session_info['ava'].copy()
+            user_id = ava['__userid']
+            del ava['__userid']
             
-            user_id = session_info['ava']['__userid']
             creds['suisseid.source'] = 'server'
+            creds['suisseid.attributes'] = ava
             creds['login'] = user_id
         
         return creds
@@ -161,6 +172,23 @@ class SuisseIDPlugin(BasePlugin):
             # Use another plugin to store the credentials
             self._getPAS().updateCredentials(self.REQUEST,
                     self.REQUEST.RESPONSE, identity, "")
+              
+            # That's Plone specific!!!
+            if hasattr(self, 'portal_membership'):
+                mt = getToolByName(self, 'portal_membership')
+                member = mt.getMemberById(credentials['login'])
+                attributes = credentials['suisseid.attributes']
+                first_name = attributes.get('First Name', [''])[0]
+                last_name = attributes.get('Last Name', [''])[0]
+                email = attributes.get('Email', [''])[0]
+                fullname = ' '.join((first_name, last_name)).strip()
+                properties = {}
+                if fullname and not member.getProperty('fullname'):
+                    properties['fullname'] = fullname
+                if email and not member.getProperty('email'):
+                    properties['email'] = email
+                member.setMemberProperties(properties)
+                    
             return (identity, identity)
             
     # IUserEnumerationPlugin implementation

@@ -2,16 +2,164 @@ import time
 import dateutil.parser
 import base64
 import sys
+import os
 
-from saml2 import samlp
+import saml2
+from saml2 import samlp, saml
+from saml2 import VERSION, class_name
+from saml2.time_util import instant
+from saml2.utils import sid, make_instance
 from saml2.sigver import XMLSEC_BINARY, _TEST_
-from saml2.sigver import SignatureError, make_temp, cert_from_instance, verify_signature, correctly_signed_response
+from saml2.sigver import SignatureError, make_temp, cert_from_instance, verify_signature
+from saml2.sigver import correctly_signed_response, pre_signature_part, sign_statement_using_xmlsec
 from saml2.client import Saml2Client as BaseClient
 from saml2.client import for_me
+
+from ech0113 import ExtendedAttribute
+
+FORM_SPEC = """<form method="post" action="%s">
+   <input type="hidden" name="SAMLRequest" value="%s" />
+   <input type="hidden" name="RelayState" value="%s" />
+   <input type="submit" value="Submit" />
+</form>"""
 
 RESPONSE_NODE = 'urn:oasis:names:tc:SAML:2.0:protocol:Response'
 
 class Saml2Client(BaseClient):
+    
+    def extended_authn_request(self, query_id, destination, service_url, spentityid, 
+                        my_name, vorg="", scoping=None, log=None, sign=False,
+                        required_attributes=[], optional_attributes=[]):
+        """ Creates an authentication request.
+        
+        :param query_id: The identifier for this request
+        :param destination: Where the request should be sent.
+        :param service_url: Where the reply should be sent.
+        :param spentityid: The entity identifier for this service.
+        :param my_name: The name of this service.
+        :param vorg: The vitual organization the service belongs to.
+        :param scoping: The scope of the request
+        :param log: A service to which logs should be written
+        :param sign: Whether the request should be signed or not.
+        :param required_attributes: Required attributes
+        :param optional_attributes: Optional attributes
+        """
+        prel = {
+            "id": query_id,
+            "version": VERSION,
+            "issue_instant": instant(),
+            "destination": destination,
+            "assertion_consumer_service_url": service_url,
+            "protocol_binding": saml2.BINDING_HTTP_POST,
+            "provider_name": my_name,
+        }
+        
+        if scoping:
+            prel["scoping"] = scoping
+            
+        name_id_policy = {
+            "allow_create": "true"
+        }
+        
+        name_id_policy["format"] = saml.NAMEID_FORMAT_TRANSIENT
+        if vorg:
+            try:
+                name_id_policy["sp_name_qualifier"] = vorg
+                name_id_policy["format"] = saml.NAMEID_FORMAT_PERSISTENT
+            except KeyError:
+                pass
+        
+        if sign:
+            prel["signature"] = pre_signature_part(prel["id"])
+
+        prel["name_id_policy"] = name_id_policy
+        prel["issuer"] = { "text": spentityid }
+        
+        if log:
+            log.info("DICT VERSION: %s" % prel)
+            
+        request = make_instance(samlp.AuthnRequest, prel)
+        
+        extensions = []
+        for attribute in required_attributes:
+            # TODO: Mandatory flag
+            name_format = 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri'
+            extensions.append(ExtendedAttribute(name_format=name_format, name=attribute, required='true'))
+        for attribute in optional_attributes:
+            name_format = 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri'
+            extensions.append(saml.Attribute(name_format=name_format, name=attribute))
+            
+        if extensions:
+            request.extensions = samlp.Extensions(extension_elements=extensions)
+            request.force_authn = 'true'
+        
+        if sign:
+            return sign_statement_using_xmlsec("%s" % request, class_name(request),
+                                    self.config["xmlsec_binary"], 
+                                    key_file=self.config["key_file"])
+            #return samlp.authn_request_from_string(sreq)
+        else:
+            return "%s" % request
+            
+    def authenticate(self, spentityid, location="", service_url="", 
+                        my_name="", relay_state="",
+                        binding=saml2.BINDING_HTTP_POST, log=None,
+                        vorg="", scoping=None,
+                        required_attributes=[], optional_attributes=[]):
+        """ Either verifies an authentication Response or if none is present
+        send an authentication request.
+        
+        :param spentityid: The SP EntityID
+        :param binding: How the authentication request should be sent to the 
+            IdP
+        :param location: Where the IdP is.
+        :param service_url: The SP's service URL
+        :param my_name: The providers name
+        :param relay_state: To where the user should be returned after 
+            successfull log in.
+        :param binding: Which binding to use for sending the request
+        :param log: Where to write log messages
+        :param vorg: The entity_id of the virtual organization I'm a member of
+        :param scoping: For which IdPs this query are aimed.
+            
+        :return: AuthnRequest response
+        """
+        
+        if log:
+            log.info("spentityid: %s" % spentityid)
+            log.info("location: %s" % location)
+            log.info("service_url: %s" % service_url)
+            log.info("my_name: %s" % my_name)
+        session_id = sid()
+        authen_req = self.extended_authn_request(session_id, location, 
+                                service_url, spentityid, my_name, vorg, 
+                                scoping, log, 
+                                required_attributes=required_attributes, 
+                                optional_attributes=optional_attributes)
+        log and log.info("AuthNReq: %s" % authen_req)
+        
+        if binding == saml2.BINDING_HTTP_POST:
+            # No valid ticket; Send a form to the client
+            # THIS IS NOT TO BE USED RIGHT NOW
+            response = []
+            response.append("<html>")
+            response.append("<head>")
+            response.append("""<title>SAML 2.0 POST</title>""")
+            response.append("</head><body>")
+            #login_url = location + '?spentityid=' + "lingon.catalogix.se"
+            response.append(FORM_SPEC % (location, base64.b64encode(authen_req),
+                                os.environ['REQUEST_URI']))
+            response.append("""<script type="text/javascript">""")
+            response.append("     window.onload = function ()")
+            response.append(" { document.forms[0].submit(); }")
+            response.append("""</script>""")
+            response.append("</body>")
+            response.append("</html>")
+        elif binding == saml2.BINDING_HTTP_REDIRECT:
+            raise Exception("HTTP redirect binding type not supported by suisseID" )
+        else:
+            raise Exception("Unkown binding type: %s" % binding)
+        return (session_id, response)
     
     def _verify_condition(self, assertion, requestor, log, lax=False, 
                         slack=0):
@@ -134,16 +282,17 @@ class Saml2Client(BaseClient):
                 log.info(decoded_xml)
             return None
         else:
-            log and log.error("Response was correctly signed or nor signed")
+            log and log.error("Response was correctly signed or not signed")
         
         log and log.info("response: %s" % (response,))
         try:
             session_info = self.do_response(response, 
-                                                requestor, 
-                                                outstanding=outstanding, 
-                                                xmlstr=xmlstr, 
-                                                log=log, context=context,
-                                                lax=lax)
+                                            requestor, 
+                                            outstanding=outstanding, 
+                                            xmlstr=xmlstr, 
+                                            log=log, 
+                                            context=context,
+                                            lax=lax)
             session_info["issuer"] = response.issuer.text
             session_info["session_id"] = response.in_response_to
         except AttributeError, exc:
