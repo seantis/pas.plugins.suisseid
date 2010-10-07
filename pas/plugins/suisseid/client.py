@@ -11,7 +11,7 @@ from saml2.time_util import instant
 from saml2.utils import sid, make_instance
 from saml2.sigver import XMLSEC_BINARY, _TEST_
 from saml2.sigver import SignatureError, make_temp, cert_from_instance, verify_signature
-from saml2.sigver import correctly_signed_response, pre_signature_part, sign_statement_using_xmlsec
+from saml2.sigver import pre_signature_part, sign_statement_using_xmlsec
 from saml2.client import Saml2Client as BaseClient
 from saml2.client import for_me
 
@@ -191,66 +191,6 @@ class Saml2Client(BaseClient):
             raise Exception("Not for me!!!")
     
         return not_on_or_after
-        
-    
-    def correctly_signed_response(decoded_xml,
-            xmlsec_binary=XMLSEC_BINARY, metadata=None, log=None, must=False):
-        """ Check if a instance is correctly signed, if we have metadata for
-        the IdP that sent the info use that, if not use the key that are in 
-        the message if any.
-    
-        :param decode_xml: The SAML message as a XML string
-        :param xmlsec_binary: Where the xmlsec1 binary can be found on this
-            system.
-        :param metadata: Metadata information
-        :return: None if the signature can not be verified otherwise an instance
-        """
-    
-        print "-- correctly_signed_response --"
-        response = samlp.response_from_string(decoded_xml)
-
-        if not xmlsec_binary:
-            xmlsec_binary = XMLSEC_BINARY
-
-        # Try to find the signing cert in the assertion
-        for assertion in response.assertion:
-            if not assertion.signature:
-                if _TEST_:
-                    log and log.info("unsigned")
-                if must:
-                    raise SignatureError("Signature missing")
-                continue
-            else:
-                if _TEST_:
-                    log and log.info("signed")
-        
-            issuer = assertion.issuer.text.strip()
-            if _TEST_:
-                print "issuer: %s" % issuer
-            if metadata:
-                certs = metadata.certs(issuer)
-            else:
-                certs = []
-
-            if _TEST_:
-                print "metadata certs: %s" % certs
-
-            if not certs:
-                certs = [make_temp("%s" % cert, ".der") \
-                            for cert in cert_from_instance(assertion)]
-            if not certs:
-                raise SignatureError("Missing certificate")
-
-            verified = False
-            for _, der_file in certs:
-                if verify_signature(xmlsec_binary, decoded_xml, der_file, node_name=RESPONSE_NODE):
-                    verified = True
-                    break
-                    
-            if not verified:
-                raise SignatureError("Could not verify")
-
-        return response
 
     def verify_response(self, xml_response, requestor, outstanding=None, 
                 log=None, decode=True, context="", lax=False):
@@ -314,6 +254,66 @@ class Saml2Client(BaseClient):
                                 
         session_info["ava"]["__userid"] = session_info["name_id"]
         return session_info
+        
+        
+def correctly_signed_response(decoded_xml,
+        xmlsec_binary=XMLSEC_BINARY, metadata=None, log=None, must=False):
+    """ Check if a instance is correctly signed, if we have metadata for
+    the IdP that sent the info use that, if not use the key that are in 
+    the message if any.
+
+    :param decode_xml: The SAML message as a XML string
+    :param xmlsec_binary: Where the xmlsec1 binary can be found on this
+        system.
+    :param metadata: Metadata information
+    :return: None if the signature can not be verified otherwise an instance
+    """
+
+    print "-- correctly_signed_response --"
+    response = samlp.response_from_string(decoded_xml)
+
+    if not xmlsec_binary:
+        xmlsec_binary = XMLSEC_BINARY
+
+    # Try to find the signing cert in the assertion
+    for assertion in response.assertion:
+        if not assertion.signature:
+            if _TEST_:
+                log and log.info("unsigned")
+            if must:
+                raise SignatureError("Signature missing")
+            continue
+        else:
+            if _TEST_:
+                log and log.info("signed")
+    
+        issuer = assertion.issuer.text.strip()
+        if _TEST_:
+            print "issuer: %s" % issuer
+        if metadata:
+            certs = metadata.certs(issuer)
+        else:
+            certs = []
+
+        if _TEST_:
+            print "metadata certs: %s" % certs
+
+        if not certs:
+            certs = [make_temp("%s" % cert, ".der") \
+                        for cert in cert_from_instance(assertion)]
+        if not certs:
+            raise SignatureError("Missing certificate")
+
+        verified = False
+        for _, der_file in certs:
+            if verify_signature(xmlsec_binary, decoded_xml, der_file, node_name=RESPONSE_NODE):
+                verified = True
+                break
+                
+        if not verified:
+            raise SignatureError("Could not verify")
+
+    return response
    
 
 def _use_on_or_after(condition, slack):
