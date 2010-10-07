@@ -29,7 +29,7 @@
       <textarea
         name="required_attributes"
         rows="10"
-        cols="80"
+        cols="40"
         tal:content="conf/required_attributes">
       </textarea>
     </td>
@@ -40,9 +40,16 @@
       <textarea
         name="optional_attributes"
         rows="10"
-        cols="80"
+        cols="40"
         tal:content="conf/optional_attributes">
       </textarea>
+    </td>
+  </tr>
+  <tr>
+    <td>Privacy Notice URL</td>
+    <td>
+      <input type="text" name="privacy_notice" size="40"
+             tal:attributes="value conf/privacy_notice" />
     </td>
   </tr>
   <tr>

@@ -15,7 +15,7 @@ from saml2.sigver import correctly_signed_response, pre_signature_part, sign_sta
 from saml2.client import Saml2Client as BaseClient
 from saml2.client import for_me
 
-from ech0113 import ExtendedAttribute
+from ech0113 import ExtendedAttribute, PrivacyNotice
 
 FORM_SPEC = """<form method="post" action="%s">
    <input type="hidden" name="SAMLRequest" value="%s" />
@@ -29,7 +29,7 @@ class Saml2Client(BaseClient):
     
     def extended_authn_request(self, query_id, destination, service_url, spentityid, 
                         my_name, vorg="", scoping=None, log=None, sign=False,
-                        required_attributes=[], optional_attributes=[]):
+                        required_attributes=[], optional_attributes=[], privacy_notice=None):
         """ Creates an authentication request.
         
         :param query_id: The identifier for this request
@@ -87,6 +87,9 @@ class Saml2Client(BaseClient):
         for attribute in optional_attributes:
             name_format = 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri'
             extensions.append(saml.Attribute(name_format=name_format, name=attribute))
+        
+        if privacy_notice:
+            extensions.append(PrivacyNotice(text=privacy_notice))
             
         if extensions:
             request.extensions = samlp.Extensions(extension_elements=extensions)
@@ -104,7 +107,8 @@ class Saml2Client(BaseClient):
                         my_name="", relay_state="",
                         binding=saml2.BINDING_HTTP_POST, log=None,
                         vorg="", scoping=None,
-                        required_attributes=[], optional_attributes=[]):
+                        required_attributes=[], optional_attributes=[],
+                        privacy_notice=None):
         """ Either verifies an authentication Response or if none is present
         send an authentication request.
         
@@ -134,7 +138,8 @@ class Saml2Client(BaseClient):
                                 service_url, spentityid, my_name, vorg, 
                                 scoping, log, 
                                 required_attributes=required_attributes, 
-                                optional_attributes=optional_attributes)
+                                optional_attributes=optional_attributes,
+                                privacy_notice=privacy_notice)
         log and log.info("AuthNReq: %s" % authen_req)
         
         if binding == saml2.BINDING_HTTP_POST:

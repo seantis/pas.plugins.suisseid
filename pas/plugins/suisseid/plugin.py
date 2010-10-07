@@ -99,6 +99,7 @@ class SuisseIDPlugin(BasePlugin):
                 optional_attributes.append(name)
         config['service']['sp']['required_attributes'] = required_attributes
         config['service']['sp']['optional_attributes'] = optional_attributes
+        config['service']['sp']['privacy_notice'] = self.config['privacy_notice']
         config['key_file'] = self.config['key_file']
         config['cert_file'] = self.config['cert_file']
         config['xmlsec_binary'] = self.config['xmlsec_binary']
@@ -142,7 +143,8 @@ class SuisseIDPlugin(BasePlugin):
                                              config["service"]["sp"]['name'],
                                              log=logger,
                                              required_attributes=config["service"]["sp"]['required_attributes'],
-                                             optional_attributes=config["service"]["sp"]['optional_attributes'])
+                                             optional_attributes=config["service"]["sp"]['optional_attributes'],
+                                             privacy_notice=config['service']['sp']['privacy_notice'])
                            
             if not hasattr(self, '_v_outstanding_authn'):
                 self._v_outstanding_authn = {}
@@ -242,7 +244,8 @@ class SuisseIDPlugin(BasePlugin):
                           portal_name='', 
                           portal_url='', 
                           required_attributes='',
-                          optional_attributes='', 
+                          optional_attributes='',
+                          privacy_notice='',
                           key_file='', 
                           cert_file='', 
                           xmlsec_binary='/usr/bin/xmlsec1'):
@@ -251,6 +254,7 @@ class SuisseIDPlugin(BasePlugin):
         self.config['portal_url'] = portal_url
         self.config['required_attributes'] = required_attributes
         self.config['optional_attributes'] = optional_attributes
+        self.config['privacy_notice'] = privacy_notice
         self.config['key_file'] = key_file
         self.config['cert_file'] = cert_file
         self.config['xmlsec_binary'] = xmlsec_binary
@@ -265,10 +269,12 @@ class SuisseIDPlugin(BasePlugin):
         
     security.declareProtected(ManageUsers, 'changeConfiguration')
     def changeConfiguration(self, portal_name, portal_url, required_attributes,
-                            optional_attributes, key_file, cert_file, xmlsec_binary):
+                            optional_attributes, privacy_notice,
+                            key_file, cert_file, xmlsec_binary):
                             
-        self._setConfiguration(portal_name, portal_url, required_attributes, optional_attributes,
-                               key_file, cert_file, xmlsec_binary)
+        self._setConfiguration(portal_name, portal_url, required_attributes, 
+                               optional_attributes, privacy_notice, key_file, 
+                               cert_file, xmlsec_binary)
         
     security.declareProtected(ManageUsers, 'manage_editConfiguration')
     def manage_editConfiguration(self, REQUEST=None):
@@ -281,12 +287,13 @@ class SuisseIDPlugin(BasePlugin):
         portal_url = form.get('portal_url', '').strip()
         required_attributes = form.get('required_attributes', [])
         optional_attributes = form.get('optional_attributes', [])
+        privacy_notice = form.get('privacy_notice', '')
         key_file = form.get('key_file', '')
         cert_file = form.get('cert_file', '')
         xmlsec_binary = form.get('xmlsec_binary', '/usr/bin/xmlsec1')
         
         self.changeConfiguration(portal_name, portal_url, required_attributes, optional_attributes,
-                                 key_file, cert_file, xmlsec_binary)
+                                 privacy_notice, key_file, cert_file, xmlsec_binary)
                                
         return REQUEST.RESPONSE.redirect(self.absolute_url() +
                                          '/manage_SuisseIDSettings')

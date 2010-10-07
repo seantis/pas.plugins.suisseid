@@ -10,6 +10,7 @@ sp_config = {
             "url" : "",
             "required_attributes": [],
             "optional_attributes": [],
+            "privacy_notice": "",
             "idp": { },
         }
     },
