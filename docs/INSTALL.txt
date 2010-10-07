@@ -7,7 +7,7 @@ Required libraries:
 
   Build manually on MAC with: 
   
-  ./configure --with-openssl=/usr/local/php5 --disable-apps-crypto-dl --disable-crypto-dl
+  ./configure --with-openssl=/usr/local/ --disable-apps-crypto-dl --disable-crypto-dl
 
 * pySAML2 (Download from http://launchpad.net/pysaml2/0.1/0.1/+download/pysaml2.0.1.tgz)
 
