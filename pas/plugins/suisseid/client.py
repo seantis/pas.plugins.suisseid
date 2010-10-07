@@ -20,7 +20,7 @@ from ech0113 import ExtendedAttribute, PrivacyNotice
 FORM_SPEC = """<form method="post" action="%s">
    <input type="hidden" name="SAMLRequest" value="%s" />
    <input type="hidden" name="RelayState" value="%s" />
-   <input style="visibility:hidden" type="submit" value="Submit" />
+   <noscript><p>Click 'Continue' to send the request manually.</p><input type="submit" value="Continue" /></noscript>
 </form>"""
 
 RESPONSE_NODE = 'urn:oasis:names:tc:SAML:2.0:protocol:Response'
