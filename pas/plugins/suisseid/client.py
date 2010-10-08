@@ -4,6 +4,7 @@ import base64
 import sys
 import os
 
+import xmldsig as ds
 import saml2
 from saml2 import samlp, saml
 from saml2 import VERSION, class_name
@@ -96,9 +97,22 @@ class Saml2Client(BaseClient):
             request.force_authn = 'true'
         
         if sign:
+            
+            # Add public key to Signature
+            fd = open(self.config["cert_file"], 'r')
+            pub_key = fd.read()
+            fd.close()
+            pub_key = pub_key.replace('-----BEGIN CERTIFICATE-----', '')
+            pub_key = pub_key.replace('-----END CERTIFICATE-----', '')
+            pub_key = pub_key.replace('\n', '')
+            x509_certificate = ds.X509Certificate(pub_key)
+            x509_data = ds.X509Data(x509_certificate=x509_certificate)
+            request.signature.key_info = ds.KeyInfo(x509_data=x509_data)
+            
             return sign_statement_using_xmlsec("%s" % request, class_name(request),
                                     self.config["xmlsec_binary"], 
                                     key_file=self.config["key_file"])
+                                    
             #return samlp.authn_request_from_string(sreq)
         else:
             return "%s" % request
@@ -134,9 +148,12 @@ class Saml2Client(BaseClient):
             log.info("service_url: %s" % service_url)
             log.info("my_name: %s" % my_name)
         session_id = sid()
+        
+        sign = self.config["key_file"] and self.config["cert_file"]
+        
         authen_req = self.extended_authn_request(session_id, location, 
                                 service_url, spentityid, my_name, vorg, 
-                                scoping, log, 
+                                scoping, log, sign,
                                 required_attributes=required_attributes, 
                                 optional_attributes=optional_attributes,
                                 privacy_notice=privacy_notice)
@@ -217,16 +234,17 @@ class Saml2Client(BaseClient):
         # own copy
         xmlstr = decoded_xml[:]
         log and log.info("verify correct signature")
+        # IdP/CAS must sign assertion, thus must=True
         response = correctly_signed_response(decoded_xml, 
                         self.config["xmlsec_binary"], log=log,
-                        metadata=self.config['metadata'])
+                        metadata=self.config['metadata'], must=True)
         if not response:
             if log:
                 log.error("Response was not correctly signed")
                 log.info(decoded_xml)
             return None
         else:
-            log and log.error("Response was correctly signed or not signed")
+            log and log.info("Response was correctly signed")
         
         log and log.info("response: %s" % (response,))
         try:
