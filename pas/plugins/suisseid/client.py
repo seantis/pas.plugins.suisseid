@@ -168,8 +168,7 @@ class Saml2Client(BaseClient):
             response.append("""<title>SAML 2.0 POST</title>""")
             response.append("</head><body>")
             #login_url = location + '?spentityid=' + "lingon.catalogix.se"
-            response.append(FORM_SPEC % (location, base64.b64encode(authen_req),
-                                os.environ['REQUEST_URI']))
+            response.append(FORM_SPEC % (location, base64.b64encode(authen_req), relay_state))
             response.append("""<script type="text/javascript">""")
             response.append("     window.onload = function ()")
             response.append(" { document.forms[0].submit(); }")

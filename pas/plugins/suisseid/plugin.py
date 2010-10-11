@@ -135,7 +135,6 @@ class SuisseIDPlugin(BasePlugin):
         if provider_url is not None and provider_url != "":
             config = self._saml2_config()
             scl = Saml2Client(request.environ, config)
-            os.environ['REQUEST_URI'] = request.environ['HTTP_REFERER']
 
             (sid, result) = scl.authenticate(config['entityid'],
                                              provider_url,
@@ -145,10 +144,9 @@ class SuisseIDPlugin(BasePlugin):
                                              required_attributes=config["service"]["sp"]['required_attributes'],
                                              optional_attributes=config["service"]["sp"]['optional_attributes'],
                                              privacy_notice=config['service']['sp']['privacy_notice'])
-                           
-            if not hasattr(self, '_v_outstanding_authn'):
-                self._v_outstanding_authn = {}
-            self._v_outstanding_authn[sid] = ''
+            
+            request.SESSION['suisseid'] = {}
+            request.SESSION['suisseid'][sid] = ''
             
             # Compose POST form with onload submit
             form_body = ''.join(result)
@@ -174,7 +172,7 @@ class SuisseIDPlugin(BasePlugin):
             config = self._saml2_config()
             scl = Saml2Client(request.environ, config)
             
-            session_info = scl.response(post, config['entityid'], self._v_outstanding_authn, logger)
+            session_info = scl.response(post, config['entityid'], request.SESSION.get('suisseid', {}), logger)
             ava = session_info['ava'].copy()
             user_id = ava['__userid']
             del ava['__userid']
@@ -259,7 +257,6 @@ class SuisseIDPlugin(BasePlugin):
         self.config['cert_file'] = cert_file
         self.config['xmlsec_binary'] = xmlsec_binary
         
-        self._v_outstanding_authn = {}
         self._v_cached_config = None
         self._p_changed = 1
         
