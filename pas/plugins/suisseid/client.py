@@ -236,7 +236,7 @@ class Saml2Client(BaseClient):
         # IdP/CAS must sign assertion, thus must=True
         response = correctly_signed_response(decoded_xml, 
                         self.config["xmlsec_binary"], log=log,
-                        metadata=self.config['metadata'], must=True)
+                        metadata=self.config['metadata'])
         if not response:
             if log:
                 log.error("Response was not correctly signed")

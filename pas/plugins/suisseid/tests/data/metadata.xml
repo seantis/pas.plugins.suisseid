@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EntitiesDescriptor 
+    xmlns="urn:oasis:names:tc:SAML:2.0:metadata" 
+    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" 
+    xmlns:shibmeta="urn:mace:shibboleth:metadata:1.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:ds="http://www.w3.org/2000/09/xmldsig#" 
+    Name="urn:mace:example.com:test-1.0">
+  <EntityDescriptor 
+    entityID="https://idp.swisssign.net/suisseid/eidp" 
+    xml:base="swamid-1.0/idp.umu.se-saml2.xml">
+  <IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <KeyDescriptor use="signing">
+      <ds:KeyInfo>
+        <ds:X509Data>
+          <!-- Certificates from swisssign_prod_token_signer_certificate_with_chain.pem 2010-04-30 -->
+          <ds:X509Certificate>MIICLzCCAZgCCQDXeXvH6Y8EeDANBgkqhkiG9w0BAQUFADBcMQswCQYDVQQGEwJD
+SDEQMA4GA1UECAwHTHVjZXJuZTEQMA4GA1UEBwwHTHVjZXJuZTEVMBMGA1UECgwM
+U2VhbnRpcyBHbWJIMRIwEAYDVQQDDAlsb2NhbGhvc3QwHhcNMTAxMDA3MTUzNzE5
+WhcNMTExMDA3MTUzNzE5WjBcMQswCQYDVQQGEwJDSDEQMA4GA1UECAwHTHVjZXJu
+ZTEQMA4GA1UEBwwHTHVjZXJuZTEVMBMGA1UECgwMU2VhbnRpcyBHbWJIMRIwEAYD
+VQQDDAlsb2NhbGhvc3QwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAMF9SqmX
+Sp1aPRU9PKS1qsRowQnU/cJlkMW/fzPVKpADcPwUYw66/CkyN7Lz7zxenFZE11YX
+PXy0sePtMFeXllpI/NbemK4Ob/6YNvgk/MUt3Ilow623LbBweDbIx2oV9+vV//lT
+ylV1iOSE3fVHu9b1MTpWOA7Gh451NEcXgHGrAgMBAAEwDQYJKoZIhvcNAQEFBQAD
+gYEActMfpJZiyBk2tkA5W0wVJdrThH9BWqkFdzM8Q9ncQO4hXHTErKyfEaRA2OUO
+/yC9z5djgDMgjOe6MgB7ROgcD1PDn4DJoOrtjyiLDBuGHBcSt66afT7Tlb/Gay7+
+35csSk5lKbK7joHVaaCxyreohGDPbJ5ekfMeGGTd13TgvoA=</ds:X509Certificate>
+       </ds:X509Data>
+      </ds:KeyInfo>
+    </KeyDescriptor>
+    <SingleSignOnService 
+        Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" 
+        Location="https://idp.swisssign.net/suisseid/eidp"/>
+  </IDPSSODescriptor>
+  <Organization>
+    <OrganizationName xml:lang="en">SwissSign SuisseID</OrganizationName>
+    <OrganizationDisplayName xml:lang="en">SwissSign SuisseID</OrganizationDisplayName>
+    <OrganizationURL xml:lang="en">http://www.swisssign.net</OrganizationURL>
+  </Organization>
+</EntityDescriptor>
+</EntitiesDescriptor>

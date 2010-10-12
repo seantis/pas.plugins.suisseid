@@ -83,7 +83,9 @@ class SuisseIDPlugin(BasePlugin):
         if hasattr(self, '_v_cached_config') and self._v_cached_config:
             return self._v_cached_config
         config = Config()
-        config.load(sp_config.copy())
+        conf=sp_config.copy()
+        conf['metadata']['local'] = [self.config['metadata_file']]
+        config.load(conf)
         config['entityid'] = self.config['portal_url']
         config['service']['sp']['name'] = self.config['portal_name']
         config['service']['sp']['url'] = self.config['portal_url']
@@ -161,7 +163,7 @@ class SuisseIDPlugin(BasePlugin):
       
             post_env = request.environ.copy()
             post_env['QUERY_STRING'] = ''
-        
+            
             request.stdin.seek(0)
             post = cgi.FieldStorage(
                 fp = StringIO(request.stdin.read()),
@@ -173,6 +175,8 @@ class SuisseIDPlugin(BasePlugin):
             scl = Saml2Client(request.environ, config)
             
             session_info = scl.response(post, config['entityid'], request.SESSION.get('suisseid', {}), logger)
+            if not session_info:
+                return None
             ava = session_info['ava'].copy()
             user_id = ava['__userid']
             del ava['__userid']
@@ -189,7 +193,9 @@ class SuisseIDPlugin(BasePlugin):
             return None
             
         if credentials['suisseid.source'] == 'server':
-            identity = credentials['login']
+            identity = credentials.get('login', None)
+            if not identity:
+                return None
             
             # Use another plugin to store the credentials
             self._getPAS().updateCredentials(self.REQUEST,
@@ -246,7 +252,8 @@ class SuisseIDPlugin(BasePlugin):
                           privacy_notice='',
                           key_file='', 
                           cert_file='', 
-                          xmlsec_binary='/usr/bin/xmlsec1'):
+                          xmlsec_binary='/usr/bin/xmlsec1',
+                          metadata_file=None):
                           
         self.config['portal_name'] = portal_name
         self.config['portal_url'] = portal_url
@@ -256,6 +263,10 @@ class SuisseIDPlugin(BasePlugin):
         self.config['key_file'] = key_file
         self.config['cert_file'] = cert_file
         self.config['xmlsec_binary'] = xmlsec_binary
+        if not metadata_file:
+            path = os.path.dirname(__file__)
+            metadata_file = os.path.join(path, 'metadata.xml')
+        self.config['metadata_file'] = metadata_file
         
         self._v_cached_config = None
         self._p_changed = 1
@@ -267,11 +278,11 @@ class SuisseIDPlugin(BasePlugin):
     security.declareProtected(ManageUsers, 'changeConfiguration')
     def changeConfiguration(self, portal_name, portal_url, required_attributes,
                             optional_attributes, privacy_notice,
-                            key_file, cert_file, xmlsec_binary):
+                            key_file, cert_file, xmlsec_binary, metadata_file=None):
                             
         self._setConfiguration(portal_name, portal_url, required_attributes, 
                                optional_attributes, privacy_notice, key_file, 
-                               cert_file, xmlsec_binary)
+                               cert_file, xmlsec_binary, metadata_file)
         
     security.declareProtected(ManageUsers, 'manage_editConfiguration')
     def manage_editConfiguration(self, REQUEST=None):

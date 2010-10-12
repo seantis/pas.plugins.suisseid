@@ -32,8 +32,6 @@ long_description = (
     '********\n'
     )
 
-tests_require=['zope.testing']
-
 setup(name='pas.plugins.suisseid',
       version=version,
       description="",
@@ -59,8 +57,9 @@ setup(name='pas.plugins.suisseid',
       install_requires=['setuptools',
                         'httplib2',
                         'python-dateutil',
+                        'Products.PluggableAuthService',
+                        'Acquisition',
+                        'Zope2',
                         # -*- Extra requirements: -*-
                         ],
-      tests_require=tests_require,
-      extras_require=dict(tests=tests_require),
       )

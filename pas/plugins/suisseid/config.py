@@ -15,7 +15,7 @@ sp_config = {
         }
     },
     "metadata" : {
-        "local" : [path+"/metadata.xml"],
+        "local" : [],
     },
     "debug" : 0,
     "key_file" : "",
