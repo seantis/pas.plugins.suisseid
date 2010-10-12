@@ -6,6 +6,7 @@ from StringIO import StringIO
 from datetime import datetime, timedelta
 
 path = os.path.dirname(__file__)
+xmlsec_binary = '/usr/local/bin/xmlsec1'
 
 class TestSuisseIdExtraction(unittest.TestCase):
 
@@ -14,7 +15,7 @@ class TestSuisseIdExtraction(unittest.TestCase):
         from pas.plugins.suisseid.plugin import SuisseIDPlugin
         plugin = SuisseIDPlugin("suisseid")
         plugin.changeConfiguration('suisseID Test Portal', 'http://nohost/', '',
-                                   '', '', '', '', '/usr/local/bin/xmlsec1')
+                                   '', '', '', '', xmlsec_binary)
         pas = MockPAS()
         return plugin.__of__(pas)
         
@@ -72,8 +73,17 @@ class TestSuisseIdExtraction(unittest.TestCase):
                             status=status,
                             assertion=assertion,
                            )
-                           
+        
         return response
+        
+    def sign_response(self, response):
+        from saml2.sigver import sign_statement_using_xmlsec
+        response = '%s' % response
+        # Sign assertion in the response
+        signed_response = sign_statement_using_xmlsec(response, "Response",
+                                xmlsec_binary,
+                                key_file=os.path.join(path, 'data', 'idp.key'))
+        return signed_response
         
     def testNoProviderExtraction(self):
         from pas.plugins.suisseid.tests.utils import MockRequest
@@ -117,7 +127,7 @@ class TestSuisseIdExtraction(unittest.TestCase):
         sp_pem = os.path.join(path, 'data', 'sp.pem')
         sp_key = os.path.join(path, 'data', 'sp.key')
         plugin.changeConfiguration('suisseID Test Portal', 'http://nohost/', '',
-                                   '', '', sp_key, sp_pem, '/usr/local/bin/xmlsec1')
+                                   '', '', sp_key, sp_pem, xmlsec_binary)
         request = MockRequest()
         request.form['__ac_suisseid_provider_url'] = 'https://idp.swisssign.net/suisseid/eidp/'
         plugin.extractCredentials(request)
@@ -129,8 +139,9 @@ class TestSuisseIdExtraction(unittest.TestCase):
         self.assertEquals(request.destination, 'https://idp.swisssign.net/suisseid/eidp/')
         # Verify signature
         from saml2.sigver import verify_signature
-        verified = verify_signature(plugin.getConfiguration()['xmlsec_binary'], decoded_xml, sp_pem, 
-                                    node_name='urn:oasis:names:tc:SAML:2.0:protocol:AuthnRequest', cert_type='pem')
+        verified = verify_signature(xmlsec_binary, decoded_xml, sp_pem, 
+                                    node_name='urn:oasis:names:tc:SAML:2.0:protocol:AuthnRequest', 
+                                    cert_type='pem')
         self.assertEquals(verified, True)
         
     def testExtendedAuthnRequestExtraction(self):
@@ -141,7 +152,7 @@ class TestSuisseIdExtraction(unittest.TestCase):
         request.form['__ac_suisseid_provider_url'] = 'https://idp.swisssign.net/suisseid/eidp/'
         # Request three attributes: First Name (required), Last Name (required) and isOver18 (optional)
         plugin.changeConfiguration('suisseID Test Portal', 'http://nohost/', 'First Name\r\nLast Name',
-                                   'isOver18', '', '', '', '/usr/local/bin/xmlsec1')
+                                   'isOver18', '', '', '', xmlsec_binary)
                                    
         request = MockRequest()
         request.form['__ac_suisseid_provider_url'] = 'https://idp.swisssign.net/suisseid/eidp/'
@@ -161,7 +172,6 @@ class TestSuisseIdExtraction(unittest.TestCase):
     
     def testResponseExtraction(self):
         from pas.plugins.suisseid.tests.utils import MockRequest
-        from saml2.sigver import sign_statement_using_xmlsec
         plugin = self.createPlugin()
         plugin.changeConfiguration('', 'http://nohost/', '', '', '', '', '', '/usr/local/bin/xmlsec1',
                                    os.path.join(path, 'data', 'metadata.xml'))
@@ -170,10 +180,7 @@ class TestSuisseIdExtraction(unittest.TestCase):
         request.SESSION['suisseid'] = { '2aaaeb7692471eb4ba00d5546877a7fd' : '' }
         # Create a SAML2 response
         response = '%s' % self.createIdpResponse('2aaaeb7692471eb4ba00d5546877a7fd')
-        # Sign assertion in the response
-        signed_response = sign_statement_using_xmlsec(response, "Response",
-                                plugin.getConfiguration()['xmlsec_binary'],
-                                key_file=os.path.join(path, 'data', 'idp.key'))
+        signed_response = self.sign_response(response)
         encoded_response = base64.b64encode(signed_response)
         request.form['SAMLResponse'] = encoded_response
         request.environ['REQUEST_METHOD'] = 'POST'
@@ -183,9 +190,8 @@ class TestSuisseIdExtraction(unittest.TestCase):
         
     def testResponseAuthnFailedExtraction(self):
         from pas.plugins.suisseid.tests.utils import MockRequest
-        from saml2.sigver import sign_statement_using_xmlsec
         plugin = self.createPlugin()
-        plugin.changeConfiguration('', 'http://nohost/', '', '', '', '', '', '/usr/local/bin/xmlsec1',
+        plugin.changeConfiguration('', 'http://nohost/', '', '', '', '', '', xmlsec_binary,
                                    os.path.join(path, 'data', 'metadata.xml'))
         request = MockRequest()
         # There has to be an outstanding AuthnRequest
@@ -195,10 +201,7 @@ class TestSuisseIdExtraction(unittest.TestCase):
         from saml2.samlp import StatusCode, STATUS_AUTHN_FAILED
         response.status.status_code = StatusCode(value=STATUS_AUTHN_FAILED)
         response = '%s' % response
-        # Sign assertion in the response
-        signed_response = sign_statement_using_xmlsec(response, "Response",
-                                plugin.getConfiguration()['xmlsec_binary'],
-                                key_file=os.path.join(path, 'data', 'idp.key'))
+        signed_response = self.sign_response(response)
         encoded_response = base64.b64encode(signed_response)
         request.form['SAMLResponse'] = encoded_response
         request.environ['REQUEST_METHOD'] = 'POST'
@@ -208,19 +211,15 @@ class TestSuisseIdExtraction(unittest.TestCase):
         
     def testResponseManipulatedExtraction(self):
         from pas.plugins.suisseid.tests.utils import MockRequest
-        from saml2.sigver import sign_statement_using_xmlsec
         plugin = self.createPlugin()
-        plugin.changeConfiguration('', 'http://nohost/', '', '', '', '', '', '/usr/local/bin/xmlsec1',
+        plugin.changeConfiguration('', 'http://nohost/', '', '', '', '', '', xmlsec_binary,
                                    os.path.join(path, 'data', 'metadata.xml'))
         request = MockRequest()
         # There has to be an outstanding AuthnRequest
         request.SESSION['suisseid'] = { '2aaaeb7692471eb4ba00d5546877a7fd' : '' }
         # Create a SAML2 response
         response = '%s' % self.createIdpResponse('2aaaeb7692471eb4ba00d5546877a7fd')
-        # Sign assertion in the response
-        signed_response = sign_statement_using_xmlsec(response, "Response",
-                                plugin.getConfiguration()['xmlsec_binary'],
-                                key_file=os.path.join(path, 'data', 'idp.key'))
+        signed_response = self.sign_response(response)
         # Response has been manipulated by third party (suisseID number changed).
         signed_response = signed_response.replace('1234-1234-1234-1234', '1234-1234-1234-1235')
         encoded_response = base64.b64encode(signed_response)
@@ -232,17 +231,15 @@ class TestSuisseIdExtraction(unittest.TestCase):
         
     def testResponseNoOutstandingAuthnRequestExtraction(self):
         from pas.plugins.suisseid.tests.utils import MockRequest
-        from saml2.sigver import sign_statement_using_xmlsec
         plugin = self.createPlugin()
-        plugin.changeConfiguration('', 'http://nohost/', '', '', '', '', '', '/usr/local/bin/xmlsec1',
+        plugin.changeConfiguration('', 'http://nohost/', '', '', '', '', '', xmlsec_binary,
                                    os.path.join(path, 'data', 'metadata.xml'))
         request = MockRequest()
+        # There are no outstanding AuthnRequesta
+        request.SESSION['suisseid'] = {}
         # Create a SAML2 response
         response = '%s' % self.createIdpResponse()
-        # Sign assertion in the response
-        signed_response = sign_statement_using_xmlsec(response, "Response",
-                                plugin.getConfiguration()['xmlsec_binary'],
-                                key_file=os.path.join(path, 'data', 'idp.key'))
+        signed_response = self.sign_response(response)
         encoded_response = base64.b64encode(signed_response)
         request.form['SAMLResponse'] = encoded_response
         request.environ['REQUEST_METHOD'] = 'POST'
