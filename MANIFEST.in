@@ -1,2 +1,3 @@
 include *.txt
-recursive-include pas *.txt *.py
+recursive-include pas *.txt *.py. *.xml *.zpt, *.png
+prune dist
