@@ -84,7 +84,11 @@ class SuisseIDPlugin(BasePlugin):
             return self._v_cached_config
         config = Config()
         conf=sp_config.copy()
-        conf['metadata']['local'] = [self.config['metadata_file']]
+        metadata_file = self.config['metadata_file']
+        if not metadata_file:
+            path = os.path.dirname(__file__)
+            metadata_file = os.path.join(path, 'metadata.xml')
+        conf['metadata']['local'] = [metadata_file]
         config.load(conf)
         config['entityid'] = self.config['portal_url']
         config['service']['sp']['name'] = self.config['portal_name']
@@ -263,9 +267,6 @@ class SuisseIDPlugin(BasePlugin):
         self.config['key_file'] = key_file
         self.config['cert_file'] = cert_file
         self.config['xmlsec_binary'] = xmlsec_binary
-        if not metadata_file:
-            path = os.path.dirname(__file__)
-            metadata_file = os.path.join(path, 'metadata.xml')
         self.config['metadata_file'] = metadata_file
         
         self._v_cached_config = None
