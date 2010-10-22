@@ -13,28 +13,14 @@ version = '0.1b1'
 long_description = (
     read('README.txt')
     + '\n' +
-    'Change history\n'
-    '**************\n'
-    + '\n' +
     read('CHANGES.txt')
     + '\n' +
-    'Detailed Documentation\n'
-    '**********************\n'
-    + '\n' +
-    read('pas', 'plugins', 'suisseid', 'README.txt')
-    + '\n' +
-    'Contributors\n'
-    '************\n'
-    + '\n' +
     read('CONTRIBUTORS.txt')
-    + '\n' +
-    'Download\n'
-    '********\n'
     )
 
 setup(name='pas.plugins.suisseid',
       version=version,
-      description="",
+      description="suisseID PAS plugin for Zope",
       long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[

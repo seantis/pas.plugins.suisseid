@@ -1,4 +1,5 @@
-suisseID PAS plugin for Zope. 
+Overview
+========
 
 Learn more about suisseID: http://www.suisseid.ch
 
