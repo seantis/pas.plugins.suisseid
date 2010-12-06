@@ -15,7 +15,7 @@ class TestSuisseIdExtraction(unittest.TestCase):
         from pas.plugins.suisseid.plugin import SuisseIDPlugin
         plugin = SuisseIDPlugin("suisseid")
         plugin.changeConfiguration('suisseID Test Portal', 'http://nohost/', '',
-                                   '', '', '', '', xmlsec_binary)
+                                   '', '', '', '', xmlsec_binary, '')
         pas = MockPAS()
         return plugin.__of__(pas)
         
@@ -104,6 +104,8 @@ class TestSuisseIdExtraction(unittest.TestCase):
         from pas.plugins.suisseid.tests.utils import MockRequest, FormParser
         from saml2.samlp import authn_request_from_string
         plugin = self.createPlugin()
+        plugin.changeConfiguration('', 'http://nohost/', '', '', '', '', '', xmlsec_binary,
+                                   os.path.join(path, 'data', 'metadata.xml'))
         request = MockRequest()
         request.form['__ac_suisseid_provider_url'] = 'https://idp.swisssign.net/suisseid/eidp/'
         result = plugin.extractCredentials(request)
@@ -127,7 +129,7 @@ class TestSuisseIdExtraction(unittest.TestCase):
         sp_pem = os.path.join(path, 'data', 'sp.pem')
         sp_key = os.path.join(path, 'data', 'sp.key')
         plugin.changeConfiguration('suisseID Test Portal', 'http://nohost/', '',
-                                   '', '', sp_key, sp_pem, xmlsec_binary)
+                                   '', '', sp_key, sp_pem, xmlsec_binary, '')
         request = MockRequest()
         request.form['__ac_suisseid_provider_url'] = 'https://idp.swisssign.net/suisseid/eidp/'
         plugin.extractCredentials(request)
@@ -152,7 +154,7 @@ class TestSuisseIdExtraction(unittest.TestCase):
         request.form['__ac_suisseid_provider_url'] = 'https://idp.swisssign.net/suisseid/eidp/'
         # Request three attributes: First Name (required), Last Name (required) and isOver18 (optional)
         plugin.changeConfiguration('suisseID Test Portal', 'http://nohost/', 'First Name\r\nLast Name',
-                                   'isOver18', '', '', '', xmlsec_binary)
+                                   'isOver18', '', '', '', xmlsec_binary, '')
                                    
         request = MockRequest()
         request.form['__ac_suisseid_provider_url'] = 'https://idp.swisssign.net/suisseid/eidp/'
@@ -246,4 +248,3 @@ class TestSuisseIdExtraction(unittest.TestCase):
         request.stdin = StringIO(urllib.urlencode({'SAMLResponse' : encoded_response}))
         creds = plugin.extractCredentials(request)
         self.assertEquals(creds, None)
-        

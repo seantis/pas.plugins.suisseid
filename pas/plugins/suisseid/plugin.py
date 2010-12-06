@@ -114,18 +114,19 @@ class SuisseIDPlugin(BasePlugin):
         config['service']['sp']['idp'] = {}
         for location in config['metadata'].locations():
             name = config['metadata'].name(location)
-            config['service']['sp']['idp'][name] = location
-        
+            config['service']['sp']['idp'][name] = location 
+                    
         self._v_cached_config = config
         return self._v_cached_config
         
     def getProviders(self):
         config = self._saml2_config()
         providers = config['service']['sp']['idp'].copy()
-        # TODO: Mismatch between actual URL and issuer ID in SAML response
+        # TODO: Mismatch between actual URL and issuer ID in SAML response from Quovadis
         for name, url in providers.items():
-            if url[-1] != '/':
-                providers[name] = url + '/'
+            if 'quovadis' in url:
+                if url[-1] != '/':
+                    providers[name] = url + '/'
 
         return providers
         
@@ -257,7 +258,7 @@ class SuisseIDPlugin(BasePlugin):
                           key_file='', 
                           cert_file='', 
                           xmlsec_binary='/usr/bin/xmlsec1',
-                          metadata_file=None):
+                          metadata_file=''):
                           
         self.config['portal_name'] = portal_name
         self.config['portal_url'] = portal_url
@@ -279,7 +280,7 @@ class SuisseIDPlugin(BasePlugin):
     security.declareProtected(ManageUsers, 'changeConfiguration')
     def changeConfiguration(self, portal_name, portal_url, required_attributes,
                             optional_attributes, privacy_notice,
-                            key_file, cert_file, xmlsec_binary, metadata_file=None):
+                            key_file, cert_file, xmlsec_binary, metadata_file):
                             
         self._setConfiguration(portal_name, portal_url, required_attributes, 
                                optional_attributes, privacy_notice, key_file, 
@@ -300,9 +301,10 @@ class SuisseIDPlugin(BasePlugin):
         key_file = form.get('key_file', '')
         cert_file = form.get('cert_file', '')
         xmlsec_binary = form.get('xmlsec_binary', '/usr/bin/xmlsec1')
+        metadata_file = form.get('metadata_file', '')
         
         self.changeConfiguration(portal_name, portal_url, required_attributes, optional_attributes,
-                                 privacy_notice, key_file, cert_file, xmlsec_binary)
+                                 privacy_notice, key_file, cert_file, xmlsec_binary, metadata_file)
                                
         return REQUEST.RESPONSE.redirect(self.absolute_url() +
                                          '/manage_SuisseIDSettings')

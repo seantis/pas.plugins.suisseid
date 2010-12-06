@@ -74,6 +74,13 @@
     </td>
   </tr>
   <tr>
+    <td>SAML2 metadata XML file</td>
+    <td>
+      <input type="text" name="metadata_file" size="40"
+             tal:attributes="value conf/metadata_file" />
+    </td>
+  </tr>
+  <tr>
     <td>&nbsp;</td>
     <td><input type="submit" name="submit" value="submit" /></td>
   </tr>

@@ -1,6 +1,9 @@
 from AccessControl.Permissions import manage_users as ManageUsers
 from Products.PluggableAuthService.PluggableAuthService import registerMultiPlugin
 
+# Monkey patches for pySAML2
+import patches
+
 import plugin
 registerMultiPlugin(plugin.SuisseIDPlugin.meta_type)
 

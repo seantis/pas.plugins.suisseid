@@ -62,7 +62,9 @@ class Saml2Client(BaseClient):
             "allow_create": "true"
         }
         
-        name_id_policy["format"] = saml.NAMEID_FORMAT_TRANSIENT
+        # see suisseID Spec. 3.6.1.3 Username in the SAML Assertion - NameID Format
+        name_id_policy["format"] = saml.NAMEID_FORMAT_UNSPECIFIED
+        
         if vorg:
             try:
                 name_id_policy["sp_name_qualifier"] = vorg
@@ -160,14 +162,11 @@ class Saml2Client(BaseClient):
         log and log.info("AuthNReq: %s" % authen_req)
         
         if binding == saml2.BINDING_HTTP_POST:
-            # No valid ticket; Send a form to the client
-            # THIS IS NOT TO BE USED RIGHT NOW
             response = []
             response.append("<html>")
             response.append("<head>")
             response.append("""<title>SAML 2.0 POST</title>""")
             response.append("</head><body>")
-            #login_url = location + '?spentityid=' + "lingon.catalogix.se"
             response.append(FORM_SPEC % (location, base64.b64encode(authen_req), relay_state))
             response.append("""<script type="text/javascript">""")
             response.append("     window.onload = function ()")

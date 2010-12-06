@@ -1,185 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EntitiesDescriptor 
-    xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
-    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
-    xmlns:shibmeta="urn:mace:shibboleth:metadata:1.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
-    Name="urn:mace:example.com:test-1.0">
-  <EntityDescriptor
-    entityID="https://idp.swisssign.net/suisseid/eidp"
-    xml:base="swamid-1.0/idp.umu.se-saml2.xml">
-  <IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
-    <KeyDescriptor use="signing">
-      <ds:KeyInfo>
-        <ds:X509Data>
-          <!-- Certificates from swisssign_prod_token_signer_certificate_with_chain.pem 2010-04-30 -->
-          <ds:X509Certificate>
-            MIIFsDCCBJigAwIBAgIQAKJoPfshYdGN4fNOhfCmszANBgkqhkiG9w0BAQUFADBT
-            MQswCQYDVQQGEwJDSDEVMBMGA1UEChMMU3dpc3NTaWduIEFHMS0wKwYDVQQDEyRT
-            d2lzc1NpZ24gUGVyc29uYWwgR29sZCBDQSAyMDA4IC0gRzIwHhcNMTAwNDI3MTMy
-            MDI1WhcNMTUwNDI3MTMyMDI1WjBtMQswCQYDVQQGEwJDSDEVMBMGA1UEChMMU3dp
-            c3NTaWduIEFHMREwDwYDVQQLEwhTdWlzc2VJRDE0MDIGA1UEAxMrcHNldWRvOiBT
-            d2lzc1NpZ24gU3Vpc3NlSUQgQXNzZXJ0aW9uIFNpZ25lcjCCASIwDQYJKoZIhvcN
-            AQEBBQADggEPADCCAQoCggEBAMVzM0i/pQ3x7pHsWfOP7jnbAc51SHkYSbTlZxER
-            d/f9we5FENbfU+PB2WmKY/b2/RHDP7HTwli6Ou2Nn2ZLw5WNH+U7OUZnM7W7DaHU
-            SlPv9lNTmquQnskt5EYyLHukMphR/JEfG4sJ+siKXlXnh2T+wFIkk/6sRSPgA533
-            9nrE0iB4mhontyqxuyg177Nyi4BTpPZPyZO70q3YO+84aNfuavLcFKgkgKUGv1WV
-            fY+0zZmGz4r4l7z018E7HDbftQK2kNBQ3Uv3kbPjt889fXZp7kM3bKa5MUksPILr
-            NNBxFJGOuxMrYIil2wfIan0Yb1qWvza/68LcvsIuu0PYzQ0CAwEAAaOCAmQwggJg
-            MA4GA1UdDwEB/wQEAwIHgDAfBgNVHSMEGDAWgBSueosV+CU+9BrvQ2slwKbhGjym
-            qzCB/wYDVR0fBIH3MIH0MEegRaBDhkFodHRwOi8vY3JsLnN3aXNzc2lnbi5uZXQv
-            QUU3QThCMTVGODI1M0VGNDFBRUY0MzZCMjVDMEE2RTExQTNDQTZBQjCBqKCBpaCB
-            ooaBn2xkYXA6Ly9kaXJlY3Rvcnkuc3dpc3NzaWduLm5ldC9DTj1BRTdBOEIxNUY4
-            MjUzRUY0MUFFRjQzNkIyNUMwQTZFMTFBM0NBNkFCJTJDTz1Td2lzc1NpZ24lMkND
-            PUNIP2NlcnRpZmljYXRlUmV2b2NhdGlvbkxpc3Q/YmFzZT9vYmplY3RDbGFzcz1j
-            UkxEaXN0cmlidXRpb25Qb2ludDBiBgNVHSAEWzBZMFcGCWCFdAFZAQIBBDBKMEgG
-            CCsGAQUFBwIBFjxodHRwOi8vcmVwb3NpdG9yeS5zd2lzc3NpZ24uY29tL1N3aXNz
-            U2lnbi1Hb2xkLUNQLUNQUy1SNC5wZGYwgcYGCCsGAQUFBwEBBIG5MIG2MGQGCCsG
-            AQUFBzAChlhodHRwOi8vc3dpc3NzaWduLm5ldC9jZ2ktYmluL2F1dGhvcml0eS9k
-            b3dubG9hZC9BRTdBOEIxNUY4MjUzRUY0MUFFRjQzNkIyNUMwQTZFMTFBM0NBNkFC
-            ME4GCCsGAQUFBzABhkJodHRwOi8vb2NzcC5zd2lzc3NpZ24ubmV0L0FFN0E4QjE1
-            RjgyNTNFRjQxQUVGNDM2QjI1QzBBNkUxMUEzQ0E2QUIwDQYJKoZIhvcNAQEFBQAD
-            ggEBAAd54Dqk2U2HxUpiAFA2rdgi6YJlDLtkn6PktD8CWGYEQtdgKkKV40itZ994
-            +6TIweCCNeSw3uSq65Cnrb8PIcqpZbsD5kezx/J7AtQnPd171Lkm33EV8m/B9zSI
-            XSAxikKzPziaTcPxA/anD4q9gHvqYMEXMtvpW3+qp9TltER/hTr6t6r4aXAR1ACM
-            rq773RnL51/DF2eLjBYdiFqJtWwoO7LW6xQImv0vgv3fPFOg0smb23dF1vmNIVCG
-            22qJ2O0kN1br8qxEgw8u23iU4y0mAD8m6yECFew72rrlLT5Tl0UNxiefzPA2hi69
-            ygV3HGBhI/qYb9UumeJfDtLlLbQ=</ds:X509Certificate>
-          <ds:X509Certificate>
-            MIIGYDCCBEigAwIBAgIIOSskHWFEw1owDQYJKoZIhvcNAQEFBQAwRTELMAkGA1UE
-            BhMCQ0gxFTATBgNVBAoTDFN3aXNzU2lnbiBBRzEfMB0GA1UEAxMWU3dpc3NTaWdu
-            IEdvbGQgQ0EgLSBHMjAeFw0wODA3MDcxNzI0MThaFw0yMzA3MDcxNzI0MThaMFMx
-            CzAJBgNVBAYTAkNIMRUwEwYDVQQKEwxTd2lzc1NpZ24gQUcxLTArBgNVBAMTJFN3
-            aXNzU2lnbiBQZXJzb25hbCBHb2xkIENBIDIwMDggLSBHMjCCASIwDQYJKoZIhvcN
-            AQEBBQADggEPADCCAQoCggEBAOM73Ly81W/YVyZ1q9DzFs62X24958JsP4RCAkGN
-            LIN+F1c1ENuKmRgxFsLT2Jj/VDz4Y+ZX5Xj6dRSJpjuOv/vzzMyF4xobXQAedKpb
-            nm3oV9oksohSWXMBJMXfSSpCrt/yW/xdmKa0s7nFbZozR7pWlh83RCYBTR+G0NjN
-            d/ls3Tgjsgl0DJwgXxUkC+gvtad/ETtSFs/YkjnQK+8TCz7mf4hmrXIe0ExWjjxv
-            huNjCQ6klBtO+48mtcTruGxcSE6gOAi0HLUYJzXBEtkhSlbpIFEonerWlB+xE3BG
-            dz4mdq34fxMz7NVLhp5V6hzDxmIfnD1HAWCrUSt+NpLvLZsCAwEAAaOCAkQwggJA
-            MA4GA1UdDwEB/wQEAwIBBjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdDgQWBBSu
-            eosV+CU+9BrvQ2slwKbhGjymqzAfBgNVHSMEGDAWgBRbJXuWpGVRfrg588B4Zl7o
-            Oufw7jCB/wYDVR0fBIH3MIH0MEegRaBDhkFodHRwOi8vY3JsLnN3aXNzc2lnbi5u
-            ZXQvNUIyNTdCOTZBNDY1NTE3RUI4MzlGM0MwNzg2NjVFRTgzQUU3RjBFRTCBqKCB
-            paCBooaBn2xkYXA6Ly9kaXJlY3Rvcnkuc3dpc3NzaWduLm5ldC9DTj01QjI1N0I5
-            NkE0NjU1MTdFQjgzOUYzQzA3ODY2NUVFODNBRTdGMEVFJTJDTz1Td2lzc1NpZ24l
-            MkNDPUNIP2NlcnRpZmljYXRlUmV2b2NhdGlvbkxpc3Q/YmFzZT9vYmplY3RDbGFz
-            cz1jUkxEaXN0cmlidXRpb25Qb2ludDBiBgNVHSAEWzBZMFcGCWCFdAFZAQIBAzBK
-            MEgGCCsGAQUFBwIBFjxodHRwOi8vcmVwb3NpdG9yeS5zd2lzc3NpZ24uY29tL1N3
-            aXNzU2lnbi1Hb2xkLUNQLUNQUy1SMy5wZGYwdAYIKwYBBQUHAQEEaDBmMGQGCCsG
-            AQUFBzAChlhodHRwOi8vc3dpc3NzaWduLm5ldC9jZ2ktYmluL2F1dGhvcml0eS9k
-            b3dubG9hZC81QjI1N0I5NkE0NjU1MTdFQjgzOUYzQzA3ODY2NUVFODNBRTdGMEVF
-            MA0GCSqGSIb3DQEBBQUAA4ICAQB7URyOT3QnB8qwB111LGdfhczBFWX0JA5bC/gj
-            7mWK5DncwQ1DlLyBQFcfO7NGDCr6QGz2TSjGCCrcNps1LYAQFMOOoR8hhCllOKW/
-            mBnVtG2oPKc6/Nu6GLUiHffYG1zFtJHi/gKi+xRhsJQ7bMJFr8O16l8mZ4CgIGgF
-            9PJUlMfvP6sceD8GL5svyB2XhHe7MelXMnWuHi6cQIjDjdVDDEdtNWwP1lE3YbyU
-            48uOETmOjHs6te1BC/unuHkxTdMsgL9/9NN+SfkY3wJ+c/GdpJMDKy6m3/yI5/eo
-            ePtA3xpYtSiHPLn8VVZC0Yvkdcde7Zh5ZFnk5FsnTWEfsCrLHm2wfvtQWvCIdu1g
-            hjaXf+Fp5/AKLj+Z4HQt7wsmqFZNOOw3dCLyXEQDNSgvttHxNiR/Xr1EeRk3gB95
-            YW8ea4AYATMGwxfnm9iiZGYTmia+jYNu+/oi4QubkpTkqDvqEPCOzGj7uGacAfLh
-            Bnt+Cd0fAvND15DTbW+o1QC7Aj27z8SITJ7us6MUGGS4dIVsPAQW5T94vw2dNBfC
-            SGqaxrvcZqY57e3MK5UowDWrVx8AJ6+qmuKevzDmdus/3mRfyj/2IB0uzTVII9tN
-            17wb5oQGq/fMJN+zl5TkrEFwzGtD6awO6Ss1SowoerfQu9FHF628MxA5AhPuP3Yt
-            Ks8LPw==</ds:X509Certificate>
-          <ds:X509Certificate>
-            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</ds:X509Certificate>
-       </ds:X509Data>
-      </ds:KeyInfo>
-    </KeyDescriptor>
-    <SingleSignOnService
-        Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
-        Location="https://idp.swisssign.net/suisseid/eidp"/>
-  </IDPSSODescriptor>
-  <Organization>
-    <OrganizationName xml:lang="en">SwissSign SuisseID</OrganizationName>
-    <OrganizationDisplayName xml:lang="en">SwissSign SuisseID</OrganizationDisplayName>
-    <OrganizationURL xml:lang="en">http://www.swisssign.net</OrganizationURL>
-  </Organization>
-</EntityDescriptor>
-  <EntityDescriptor
-    entityID="https://idp.quovadis.ch/suisseid/eidp"
-    xml:base="swamid-1.0/idp.umu.se-saml2.xml">
-  <IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
-    <KeyDescriptor use="signing">
-      <ds:KeyInfo>
-        <ds:X509Data>
-          <!-- Certificates http://trust.quovadisglobal.com/qvsidag1.crt 2010-10-11 -->
-          <ds:X509Certificate>
-              MIIF5jCCBM6gAwIBAgIEQh/VljANBgkqhkiG9w0BAQUFADB/MQswCQYDVQQGEwJC
-              TTEZMBcGA1UEChMQUXVvVmFkaXMgTGltaXRlZDElMCMGA1UECxMcUm9vdCBDZXJ0
-              aWZpY2F0aW9uIEF1dGhvcml0eTEuMCwGA1UEAxMlUXVvVmFkaXMgUm9vdCBDZXJ0
-              aWZpY2F0aW9uIEF1dGhvcml0eTAeFw0xMDAzMjMxODEwNDhaFw0yMDAzMjMxODEw
-              NDhaMIGOMQswCQYDVQQGEwJDSDEsMCoGA1UEChMjUXVvVmFkaXMgVHJ1c3RsaW5r
-              IFN3aXR6ZXJsYW5kIEx0ZC4xKDAmBgNVBAsTH0lzc3VpbmcgQ2VydGlmaWNhdGlv
-              biBBdXRob3JpdHkxJzAlBgNVBAMTHlF1b1ZhZGlzIFN1aXNzZUlEIFF1YWxpZmll
-              ZCBDQTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAJd/3vPMAOrNzu8R
-              SXxtmKRGgkXhACr2R8CzgofhXKdFDCmPi5eDnwwpZItUpRQ8Bofxvxg0mwYq1Z8X
-              9dgbrJUW4xgem/5E40YoyRrPdPqi+Sz4AZd1yu3f+hjqw4WNEDLBATNv0xYlAjiS
-              lDs0mt/TsMfmo3DrM9ekunLSPmZmYjXCjfJwUPNusM7lrthcSULelUdyxR+xGhfL
-              EDG3aRBjV3hoPhdnhFN3GwPQsKSQNk2agb4jaqwHb/d4+3zQo44a6DVyWlB2aIpu
-              FPdgeoKlCKfMv+jj8WjEghVr6XWgi3s4v0wKFSvgY2YC86P+RWCJZG43OgJWIHUF
-              NcAWnHgyjKcgtfzwmrIo2U5LAMv5f0MRZ1Igg83+IwxhIA97nP2fjwbypTGY5HGR
-              JFf+NJFtATp5tFQ1P8qKqL+4mXhHvlgJTZHLB/vMHFRmpHCbnNYk2kfCmQQlb9qN
-              /qMoIls0eKm+j4M86HaIghFnYZisUvLVH7XeCpUqTpsqq0a5InCkny85xrT4CFHM
-              EngF+UEZilhUd2WxgOT3uxggK5cW/PNVSQ1XnTIjWHSXszG3ZdPaH2/AV06nPiSM
-              Amvh4nwqQ49yO2wBNYdFtcUL6QpgQJUFuONKmQNFr5H3TP12+29SfG4HTqOcqO50
-              vY8wA5+K7wqi+L30C7d35CQErVbtAgMBAAGjggFYMIIBVDAPBgNVHRMBAf8EBTAD
-              AQH/MBEGA1UdIAQKMAgwBgYEVR0gADA6BggrBgEFBQcBAQQuMCwwKgYIKwYBBQUH
-              MAGGHmh0dHA6Ly9vY3NwLnF1b3ZhZGlzZ2xvYmFsLmNvbTAuBggrBgEFBQcBAwQi
-              MCAwCgYIKwYBBQUHCwIwCAYGBACORgEBMAgGBgQAjkYBBDAOBgNVHQ8BAf8EBAMC
-              AQYwOAYDVR0SBDEwL6QtMCsxKTAnBgNVBAoTIFplcnRFUyBSZWNvZ25pdGlvbiBC
-              b2R5OiBLUE1HIEFHMB8GA1UdIwQYMBaAFItLbe3TKbkGGew5Oanwl4Rqy+/fMDgG
-              A1UdHwQxMC8wLaAroCmGJ2h0dHA6Ly9jcmwucXVvdmFkaXNnbG9iYWwuY29tL3F2
-              cmNhLmNybDAdBgNVHQ4EFgQUy2CwcOdYlfWXWSX2vCBtlIxEbp8wDQYJKoZIhvcN
-              AQEFBQADggEBAHv2lBXyElIMDvFjuX46+GeyAoZSXXOsWQAsMbfv4WYZQaKwWRVW
-              /zuhnHaPXLykY0KHYeVhTUAKrF78KuRVMXVx08HL8pbm1oHHV0v8+bV7vU3N7+BT
-              pHLChoZRo1UZh57YrAWjXW+lUlefFJXzKj3EfMFlQ2tfwIVFQT82uVErFoihts+u
-              jrqFcrR9QKmRRFOEiAiSw16TEMxnBNQ55n/f4aCi2g9Emjn/Pe1A9E/HnHAB35SP
-              ZyV+Ms9zdRsCgXHiPxE6x+FI3evGTwjY3uTrmI4jr70ODYqOuxmzx9T72kjOO8nC
-              yjyqSvfUVu8ixZSHMDpPX2wRIOHpG4zTEnk=</ds:X509Certificate>
-       </ds:X509Data>
-      </ds:KeyInfo>
-    </KeyDescriptor>
-    <SingleSignOnService
-        Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
-        Location="https://idp.quovadis.ch/suisseid/eidp"/>
-  </IDPSSODescriptor>
-  <Organization>
-    <OrganizationName xml:lang="en">QuoVadis SuisseID</OrganizationName>
-    <OrganizationDisplayName xml:lang="en">QuoVadis SuisseID</OrganizationDisplayName>
-    <OrganizationURL xml:lang="en">http://www.quovadis.ch</OrganizationURL>
-  </Organization>
-</EntityDescriptor>
+  xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
+  xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+  xmlns:shibmeta="urn:mace:shibboleth:metadata:1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+    
+    <EntityDescriptor entityID="https://idp.swisssign.net/suisseid/SSOPOST/metaAlias/swisssign.net/idp">
+        <IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+            <KeyDescriptor use="signing">
+                <ds:KeyInfo>
+                    <ds:X509Data>
+                        <!-- Certificate from https://idp.swisssign.net/idp.swisssign.net-meta.xml -->
+                        <ds:X509Certificate>
+                            MIIFsDCCBJigAwIBAgIQAKJoPfshYdGN4fNOhfCmszANBgkqhkiG9w0BAQUFADBT
+                            MQswCQYDVQQGEwJDSDEVMBMGA1UEChMMU3dpc3NTaWduIEFHMS0wKwYDVQQDEyRT
+                            d2lzc1NpZ24gUGVyc29uYWwgR29sZCBDQSAyMDA4IC0gRzIwHhcNMTAwNDI3MTMy
+                            MDI1WhcNMTUwNDI3MTMyMDI1WjBtMQswCQYDVQQGEwJDSDEVMBMGA1UEChMMU3dp
+                            c3NTaWduIEFHMREwDwYDVQQLEwhTdWlzc2VJRDE0MDIGA1UEAxMrcHNldWRvOiBT
+                            d2lzc1NpZ24gU3Vpc3NlSUQgQXNzZXJ0aW9uIFNpZ25lcjCCASIwDQYJKoZIhvcN
+                            AQEBBQADggEPADCCAQoCggEBAMVzM0i/pQ3x7pHsWfOP7jnbAc51SHkYSbTlZxER
+                            d/f9we5FENbfU+PB2WmKY/b2/RHDP7HTwli6Ou2Nn2ZLw5WNH+U7OUZnM7W7DaHU
+                            SlPv9lNTmquQnskt5EYyLHukMphR/JEfG4sJ+siKXlXnh2T+wFIkk/6sRSPgA533
+                            9nrE0iB4mhontyqxuyg177Nyi4BTpPZPyZO70q3YO+84aNfuavLcFKgkgKUGv1WV
+                            fY+0zZmGz4r4l7z018E7HDbftQK2kNBQ3Uv3kbPjt889fXZp7kM3bKa5MUksPILr
+                            NNBxFJGOuxMrYIil2wfIan0Yb1qWvza/68LcvsIuu0PYzQ0CAwEAAaOCAmQwggJg
+                            MA4GA1UdDwEB/wQEAwIHgDAfBgNVHSMEGDAWgBSueosV+CU+9BrvQ2slwKbhGjym
+                            qzCB/wYDVR0fBIH3MIH0MEegRaBDhkFodHRwOi8vY3JsLnN3aXNzc2lnbi5uZXQv
+                            QUU3QThCMTVGODI1M0VGNDFBRUY0MzZCMjVDMEE2RTExQTNDQTZBQjCBqKCBpaCB
+                            ooaBn2xkYXA6Ly9kaXJlY3Rvcnkuc3dpc3NzaWduLm5ldC9DTj1BRTdBOEIxNUY4
+                            MjUzRUY0MUFFRjQzNkIyNUMwQTZFMTFBM0NBNkFCJTJDTz1Td2lzc1NpZ24lMkND
+                            PUNIP2NlcnRpZmljYXRlUmV2b2NhdGlvbkxpc3Q/YmFzZT9vYmplY3RDbGFzcz1j
+                            UkxEaXN0cmlidXRpb25Qb2ludDBiBgNVHSAEWzBZMFcGCWCFdAFZAQIBBDBKMEgG
+                            CCsGAQUFBwIBFjxodHRwOi8vcmVwb3NpdG9yeS5zd2lzc3NpZ24uY29tL1N3aXNz
+                            U2lnbi1Hb2xkLUNQLUNQUy1SNC5wZGYwgcYGCCsGAQUFBwEBBIG5MIG2MGQGCCsG
+                            AQUFBzAChlhodHRwOi8vc3dpc3NzaWduLm5ldC9jZ2ktYmluL2F1dGhvcml0eS9k
+                            b3dubG9hZC9BRTdBOEIxNUY4MjUzRUY0MUFFRjQzNkIyNUMwQTZFMTFBM0NBNkFC
+                            ME4GCCsGAQUFBzABhkJodHRwOi8vb2NzcC5zd2lzc3NpZ24ubmV0L0FFN0E4QjE1
+                            RjgyNTNFRjQxQUVGNDM2QjI1QzBBNkUxMUEzQ0E2QUIwDQYJKoZIhvcNAQEFBQAD
+                            ggEBAAd54Dqk2U2HxUpiAFA2rdgi6YJlDLtkn6PktD8CWGYEQtdgKkKV40itZ994
+                            +6TIweCCNeSw3uSq65Cnrb8PIcqpZbsD5kezx/J7AtQnPd171Lkm33EV8m/B9zSI
+                            XSAxikKzPziaTcPxA/anD4q9gHvqYMEXMtvpW3+qp9TltER/hTr6t6r4aXAR1ACM
+                            rq773RnL51/DF2eLjBYdiFqJtWwoO7LW6xQImv0vgv3fPFOg0smb23dF1vmNIVCG
+                            22qJ2O0kN1br8qxEgw8u23iU4y0mAD8m6yECFew72rrlLT5Tl0UNxiefzPA2hi69
+                            ygV3HGBhI/qYb9UumeJfDtLlLbQ=
+                        </ds:X509Certificate>
+                    </ds:X509Data>
+                </ds:KeyInfo>
+            </KeyDescriptor>
+            <SingleSignOnService
+              Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+              Location="https://idp.swisssign.net/suisseid/SSOPOST/metaAlias/swisssign.net/idp"/>
+        </IDPSSODescriptor>
+        <Organization>
+            <OrganizationName xml:lang="en">SwissSign SuisseID</OrganizationName>
+            <OrganizationDisplayName xml:lang="en">SwissSign SuisseID</OrganizationDisplayName>
+            <OrganizationURL xml:lang="en">http://www.swisssign.net</OrganizationURL>
+        </Organization>
+    </EntityDescriptor>
+  
+    <EntityDescriptor entityID="https://idp.quovadis.ch/suisseid/eidp">
+        <IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+            <KeyDescriptor use="signing">
+                <ds:KeyInfo>
+                    <ds:X509Data>
+                        <!-- Certificate http://trust.quovadisglobal.com/qvsidag1.crt 2010-10-11 -->
+                        <ds:X509Certificate>
+                            MIIF5jCCBM6gAwIBAgIEQh/VljANBgkqhkiG9w0BAQUFADB/MQswCQYDVQQGEwJC
+                            TTEZMBcGA1UEChMQUXVvVmFkaXMgTGltaXRlZDElMCMGA1UECxMcUm9vdCBDZXJ0
+                            aWZpY2F0aW9uIEF1dGhvcml0eTEuMCwGA1UEAxMlUXVvVmFkaXMgUm9vdCBDZXJ0
+                            aWZpY2F0aW9uIEF1dGhvcml0eTAeFw0xMDAzMjMxODEwNDhaFw0yMDAzMjMxODEw
+                            NDhaMIGOMQswCQYDVQQGEwJDSDEsMCoGA1UEChMjUXVvVmFkaXMgVHJ1c3RsaW5r
+                            IFN3aXR6ZXJsYW5kIEx0ZC4xKDAmBgNVBAsTH0lzc3VpbmcgQ2VydGlmaWNhdGlv
+                            biBBdXRob3JpdHkxJzAlBgNVBAMTHlF1b1ZhZGlzIFN1aXNzZUlEIFF1YWxpZmll
+                            ZCBDQTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAJd/3vPMAOrNzu8R
+                            SXxtmKRGgkXhACr2R8CzgofhXKdFDCmPi5eDnwwpZItUpRQ8Bofxvxg0mwYq1Z8X
+                            9dgbrJUW4xgem/5E40YoyRrPdPqi+Sz4AZd1yu3f+hjqw4WNEDLBATNv0xYlAjiS
+                            lDs0mt/TsMfmo3DrM9ekunLSPmZmYjXCjfJwUPNusM7lrthcSULelUdyxR+xGhfL
+                            EDG3aRBjV3hoPhdnhFN3GwPQsKSQNk2agb4jaqwHb/d4+3zQo44a6DVyWlB2aIpu
+                            FPdgeoKlCKfMv+jj8WjEghVr6XWgi3s4v0wKFSvgY2YC86P+RWCJZG43OgJWIHUF
+                            NcAWnHgyjKcgtfzwmrIo2U5LAMv5f0MRZ1Igg83+IwxhIA97nP2fjwbypTGY5HGR
+                            JFf+NJFtATp5tFQ1P8qKqL+4mXhHvlgJTZHLB/vMHFRmpHCbnNYk2kfCmQQlb9qN
+                            /qMoIls0eKm+j4M86HaIghFnYZisUvLVH7XeCpUqTpsqq0a5InCkny85xrT4CFHM
+                            EngF+UEZilhUd2WxgOT3uxggK5cW/PNVSQ1XnTIjWHSXszG3ZdPaH2/AV06nPiSM
+                            Amvh4nwqQ49yO2wBNYdFtcUL6QpgQJUFuONKmQNFr5H3TP12+29SfG4HTqOcqO50
+                            vY8wA5+K7wqi+L30C7d35CQErVbtAgMBAAGjggFYMIIBVDAPBgNVHRMBAf8EBTAD
+                            AQH/MBEGA1UdIAQKMAgwBgYEVR0gADA6BggrBgEFBQcBAQQuMCwwKgYIKwYBBQUH
+                            MAGGHmh0dHA6Ly9vY3NwLnF1b3ZhZGlzZ2xvYmFsLmNvbTAuBggrBgEFBQcBAwQi
+                            MCAwCgYIKwYBBQUHCwIwCAYGBACORgEBMAgGBgQAjkYBBDAOBgNVHQ8BAf8EBAMC
+                            AQYwOAYDVR0SBDEwL6QtMCsxKTAnBgNVBAoTIFplcnRFUyBSZWNvZ25pdGlvbiBC
+                            b2R5OiBLUE1HIEFHMB8GA1UdIwQYMBaAFItLbe3TKbkGGew5Oanwl4Rqy+/fMDgG
+                            A1UdHwQxMC8wLaAroCmGJ2h0dHA6Ly9jcmwucXVvdmFkaXNnbG9iYWwuY29tL3F2
+                            cmNhLmNybDAdBgNVHQ4EFgQUy2CwcOdYlfWXWSX2vCBtlIxEbp8wDQYJKoZIhvcN
+                            AQEFBQADggEBAHv2lBXyElIMDvFjuX46+GeyAoZSXXOsWQAsMbfv4WYZQaKwWRVW
+                            /zuhnHaPXLykY0KHYeVhTUAKrF78KuRVMXVx08HL8pbm1oHHV0v8+bV7vU3N7+BT
+                            pHLChoZRo1UZh57YrAWjXW+lUlefFJXzKj3EfMFlQ2tfwIVFQT82uVErFoihts+u
+                            jrqFcrR9QKmRRFOEiAiSw16TEMxnBNQ55n/f4aCi2g9Emjn/Pe1A9E/HnHAB35SP
+                            ZyV+Ms9zdRsCgXHiPxE6x+FI3evGTwjY3uTrmI4jr70ODYqOuxmzx9T72kjOO8nC
+                            yjyqSvfUVu8ixZSHMDpPX2wRIOHpG4zTEnk=
+                        </ds:X509Certificate>
+                    </ds:X509Data>
+                </ds:KeyInfo>
+            </KeyDescriptor>
+            <SingleSignOnService
+              Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+              Location="https://idp.quovadis.ch/suisseid/eidp"/>
+        </IDPSSODescriptor>
+        <Organization>
+            <OrganizationName xml:lang="en">QuoVadis SuisseID</OrganizationName>
+            <OrganizationDisplayName xml:lang="en">QuoVadis SuisseID</OrganizationDisplayName>
+            <OrganizationURL xml:lang="en">http://www.quovadis.ch</OrganizationURL>
+        </Organization>
+    </EntityDescriptor>
 
 </EntitiesDescriptor>
