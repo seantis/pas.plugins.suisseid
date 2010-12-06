@@ -98,11 +98,15 @@ class SuisseIDPlugin(BasePlugin):
             name = attributes.get(attribute, None)
             if name:
                 required_attributes.append(name)
+            elif attribute in attributes.values():
+                required_attributes.append(attribute)
         optional_attributes = []
         for attribute in self.config['optional_attributes'].split('\r\n'):
             name = attributes.get(attribute, None)
             if name:
                 optional_attributes.append(name)
+            elif attribute in attributes.values():
+                required_attributes.append(attribute)
         config['service']['sp']['required_attributes'] = required_attributes
         config['service']['sp']['optional_attributes'] = optional_attributes
         config['service']['sp']['privacy_notice'] = self.config['privacy_notice']
