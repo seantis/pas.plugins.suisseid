@@ -30,7 +30,7 @@ suisseid_format = re.compile('[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}')
 
 attributes = {
     
-    # Plain Core Assertion Attributes 
+    # Plain Core Assertion Attributes
     'Given Names' : 'http://www.ech.ch/xmlns/eCH-0113/1/givenNames',
     'First Name' : 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname',
     'Last Name' : 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname',
@@ -206,16 +206,26 @@ class SuisseIDPlugin(BasePlugin):
             self._getPAS().updateCredentials(self.REQUEST,
                     self.REQUEST.RESPONSE, identity, "")
               
-            # That's Plone specific!!!
+            # TODO: That's Plone specific!!!
             if hasattr(self, 'portal_membership'):
                 mt = getToolByName(self, 'portal_membership')
                 member = mt.getMemberById(credentials['login'])
-                attributes = credentials['suisseid.attributes']
-                first_name = attributes.get('First Name', [''])[0]
-                last_name = attributes.get('Last Name', [''])[0]
-                email = attributes.get('Email', [''])[0]
-                fullname = ' '.join((first_name, last_name)).strip()
+                suisseid_attributes = credentials['suisseid.attributes']
                 properties = {}
+                # Add all returned Plain Core Assertion Attributes and Derived Core Assertion Attributes
+                # as properties to the member object.
+                for attribute_key in suisseid_attributes.keys():
+                    if attribute_key in attributes.keys():
+                        attribute_key = attributes[attribute_key]
+                    elif attribute_key not in attributes.values():
+                        continue
+                    properties[attribute_key] = suisseid_attributes[attribute_key][0]
+                
+                # Try to derive anbd set basic Plone member properties
+                first_name = properties.get('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname', '')
+                last_name = properties.get('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname', '')
+                email = properties.get('Email', '')
+                fullname = ' '.join((first_name, last_name)).strip()
                 if fullname and not member.getProperty('fullname'):
                     properties['fullname'] = fullname
                 if email and not member.getProperty('email'):
