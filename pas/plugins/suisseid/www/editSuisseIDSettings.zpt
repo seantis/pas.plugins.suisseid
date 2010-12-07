@@ -29,7 +29,7 @@
       <textarea
         name="required_attributes"
         rows="10"
-        cols="40"
+        cols="100"
         tal:content="conf/required_attributes">
       </textarea>
     </td>
@@ -40,7 +40,7 @@
       <textarea
         name="optional_attributes"
         rows="10"
-        cols="40"
+        cols="100"
         tal:content="conf/optional_attributes">
       </textarea>
     </td>
