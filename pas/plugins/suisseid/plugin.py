@@ -35,7 +35,7 @@ attributes = {
     'First Name' : 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname',
     'Last Name' : 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname',
     'Date of Birth' : 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dateofbirth',
-    # TODO: Date of Birth partially known
+    'Date of Birth Partial Known' : 'http://www.ech.ch/xmlns/eCH-0113/1/dateOfBirthPartiallyKnown',
     'Place of Birth' : 'http://www.ech.ch/xmlns/eCH-0113/1/placeOfBirth',
     'Origin' : 'http://www.ech.ch/xmlns/eCH-0113/1/origin',
     'Gender' : 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/gender',
@@ -219,11 +219,8 @@ class SuisseIDPlugin(BasePlugin):
                 # Add all returned Plain Core Assertion Attributes and Derived Core Assertion Attributes
                 # as properties to the member object.
                 for attribute_key in suisseid_attributes.keys():
-                    if attribute_key in attributes.keys():
-                        attribute_key = attributes[attribute_key]
-                    elif attribute_key not in attributes.values():
-                        continue
-                    properties[attribute_key] = suisseid_attributes[attribute_key][0]
+                    if attribute_key in attributes.values():
+                        properties[attribute_key] = suisseid_attributes[attribute_key][0]
                 
                 # Try to derive anbd set basic Plone member properties
                 first_name = properties.get('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname', '')

@@ -1,5 +1,6 @@
+from saml2 import client
 from saml2 import config
-from saml2 import md, BINDING_HTTP_POST
+from saml2 import BINDING_HTTP_POST
 
 # Patch saml2 so that binding is post and not redirect
 def entity_id2url(meta, entity_id):
@@ -14,3 +15,24 @@ def entity_id2url(meta, entity_id):
     return meta.single_sign_on_services(entity_id, binding = BINDING_HTTP_POST)[0]
     
 config.entity_id2url = entity_id2url
+
+# Patch saml2 so that Name is alway used instead of FriendlyName for attributes
+def get_attribute_values(attribute_statement):
+    """ Get the attributes and the attribute values 
+    
+    :param response: The AttributeStatement.
+    :return: A dictionary containing attributes and values
+    """
+    
+    result = {}
+    for attribute in attribute_statement.attribute:
+        name = attribute.name.strip()
+        result[name] = []
+        for value in attribute.attribute_value:
+            if not value.text:
+                result[name].append('')
+            else:
+                result[name].append(value.text.strip())    
+    return result
+    
+client.get_attribute_values = get_attribute_values
