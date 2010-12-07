@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.1b2 (unreleased)
+0.1b2 (2010-12-07)
 ------------------
 
 - Cleanup docs
