@@ -149,7 +149,7 @@ class SuisseIDPlugin(BasePlugin):
             actual_url = sp_url
         
         # Initiate challenge
-        if provider_url and actual_url == sp_url:
+        if provider_url and actual_url.strip('/') == sp_url.strip('/'):
             scl = Saml2Client(request.environ, config)
 
             (sid, result) = scl.authenticate(config['entityid'],
@@ -173,7 +173,7 @@ class SuisseIDPlugin(BasePlugin):
             return None
         
         # Idp response
-        if 'SAMLResponse' in request.form and actual_url == sp_url:
+        if 'SAMLResponse' in request.form and actual_url.strip('/') == sp_url.strip('/'):
       
             post_env = request.environ.copy()
             post_env['QUERY_STRING'] = ''

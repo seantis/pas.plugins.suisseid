@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.1b4 (2010-12-09)
+------------------
+
+- Ignore trailing dash upon URL comparison.
+
 0.1b3 (2010-12-09)
 ------------------
 
