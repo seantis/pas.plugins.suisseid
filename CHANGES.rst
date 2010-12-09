@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.1b3 (2010-12-09)
+------------------
+
+- Make sure that the challenge initiation and response handling happen
+  on the configured URL only (allows other suisseId handlers on other URLs).
+
 0.1b2 (2010-12-07)
 ------------------
 

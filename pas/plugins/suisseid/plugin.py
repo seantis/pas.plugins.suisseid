@@ -141,10 +141,15 @@ class SuisseIDPlugin(BasePlugin):
         """
         
         creds={}
-        # Initiate challenge
+        config = self._saml2_config()
         provider_url = request.form.get("__ac_suisseid_provider_url", None)
-        if provider_url is not None and provider_url != "":
-            config = self._saml2_config()
+        sp_url = config["service"]["sp"]['url']
+        actual_url = request["ACTUAL_URL"]
+        if not actual_url: # request["ACTUAL_URL"] is empty in unittest
+            actual_url = sp_url
+        
+        # Initiate challenge
+        if provider_url and actual_url == sp_url:
             scl = Saml2Client(request.environ, config)
 
             (sid, result) = scl.authenticate(config['entityid'],
@@ -168,7 +173,7 @@ class SuisseIDPlugin(BasePlugin):
             return None
         
         # Idp response
-        if 'SAMLResponse' in request.form:
+        if 'SAMLResponse' in request.form and actual_url == sp_url:
       
             post_env = request.environ.copy()
             post_env['QUERY_STRING'] = ''
