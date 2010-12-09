@@ -6,6 +6,8 @@ Changelog
 
 - Make sure that the challenge initiation and response handling happen
   on the configured URL only (allows other suisseId handlers on other URLs).
+- Patch pySAML2's audience restriction check so that only the first part of 
+  the URL has to be the same.
 
 0.1b2 (2010-12-07)
 ------------------

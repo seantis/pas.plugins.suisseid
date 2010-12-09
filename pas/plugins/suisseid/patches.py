@@ -36,3 +36,15 @@ def get_attribute_values(attribute_statement):
     return result
     
 client.get_attribute_values = get_attribute_values
+
+# Patch audience restriction check so that only the first part of the URL has
+# to be the same.
+def for_me(condition, myself ):
+    for restriction in condition.audience_restriction:
+        audience = restriction.audience
+        if myself.startswith(audience.text.strip()):
+            return True
+        else:
+            print audience.text.strip()
+
+client.for_me = for_me
