@@ -1,2 +1,2 @@
 include *.rst
-recursive-include pas *.rst *.py *.xml *.zpt *.png *.zcml
+recursive-include pas *.rst *.py *.xml *.zpt *.png *.zcml *.key *.pem

@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.1 ()
+------
+
+- Include test certificates in releases.
+
 0.1b4 (2010-12-09)
 ------------------
 
